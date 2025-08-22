@@ -1,15 +1,10 @@
-# Vision-SR1
+# Vision-SR1: Self-Rewarding Vision-Language Model via Reasoning Decomposition
 
-The official repo for "Self-Rewarding Vision-Language Model via Reasoning Decomposition".
+[[📖 Paper](---)] [[🤗 Vision-SR1-7B-model](https://huggingface.co/LMMs-Lab-Turtle/SelfRewarded-R1-7B)] [[🤗 Vision-SR1-7B-Cold-Start](https://huggingface.co/LMMs-Lab-Turtle/Qwen-2.5VL-7B-Cold-Start)] 
+[[📊 Vision-SR1-47K](https://huggingface.co/datasets/LMMs-Lab-Turtle/Vision-SR1-47K)]  [[📊 Vision-SR1-Cold-Start-9K](--)]
+[[📈 Vision-SR1-Training Curve](https://api.wandb.ai/links/zli12321-university-of-maryland/85ed11ft)] 
 
-<p align="center">
-       🤗 <a href="https://huggingface.co/datasets/Osilly/Vision-R1-cold">Cold-start Dataset (Vision-R1-cold)</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/datasets/Osilly/Vision-R1-rl">RL Dataset (Vision-R1-rl)</a>&nbsp&nbsp
-</p>
-
-<p align="center">
-       🤗 <a href="https://huggingface.co/Osilly/Vision-R1-CI-7B">Vision-R1-CI-7B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-7B">Vision-R1-7B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-32B">Vision-R1-32B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-72B">Vision-R1-72B</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://arxiv.org/abs/2503.06749">Paper</a>&nbsp&nbsp
-</p>
-The datasets, code and weights will be released, stay tuned!
+LLM evaluation scripts and model generation outputs with LLM judgments is coming, stay tuned!
 
 ## Features
 
