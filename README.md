@@ -22,7 +22,9 @@ LLM evaluation scripts and model generation outputs with LLM judgments is coming
 
 ## 👀 About Vision-SR1
 
-Vision-SR1 is a self-rewarded RL training framework to decompose VLMs' language reasoning into visual perception reasoning and language reasoning. Inspired by the awesome works of e.g. Vision-R1, Visionary-R1, R1-VL, we leverage VLM's self reasoning ability to 
+Vision-SR1 is a self-rewarded RL training framework to decompose VLMs' language reasoning into visual perception reasoning and language reasoning. Inspired by the awesome works of e.g. Vision-R1, Visionary-R1, R1-VL, we leverage VLM's self evolving and reasoning ability to **Reward Itself**. 
+
+Due to the fundamental architectures of VLMs, that the vision encoder and large language models are fused later in the pretraining stage, VLMs mainly use its LLM reasoning ability to complete multimodal tasks. Regular RL training framework activates
 
 Inspired by DeepSeek-R1's success in eliciting reasoning abilities through rule-based RL, we introduce Video-R1 as **the first work to *systematically* explore the R1 paradigm for eliciting video reasoning** within MLLMs. 
 
