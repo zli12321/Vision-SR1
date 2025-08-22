@@ -32,6 +32,9 @@ Our Video-R1-7B obtain strong performance on several video reasoning benchmarks.
 
 Vision-SR1 **can be easily trained** using 4 or 8 A100 (80G) GPUs.
 
+<p align="center">
+    <img src="./assets/method.png" width="80%">
+</p>
 
 ## Requirements
 
