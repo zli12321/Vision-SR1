@@ -1,0 +1,23 @@
+Looking in indexes: http://mirrors.tencent.com/pypi/simple/, http://mirrors.tencent.com/tencent_pypi/simple/
+Collecting transformers
+  Downloading http://mirrors.tencent.com/yun/pypi/packages/96/88/beb33a79a382fcd2aed0be5222bdc47f41e4bfe7aaa90ae1374f1d8ea2af/transformers-4.53.2-py3-none-any.whl (10.8 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 5.7 MB/s eta 0:00:00
+Requirement already satisfied: filelock in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (3.18.0)
+Requirement already satisfied: huggingface-hub<1.0,>=0.30.0 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (0.33.4)
+Requirement already satisfied: numpy>=1.17 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (1.26.4)
+Requirement already satisfied: packaging>=20.0 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (25.0)
+Requirement already satisfied: pyyaml>=5.1 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (6.0.2)
+Requirement already satisfied: regex!=2019.12.17 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (2024.11.6)
+Requirement already satisfied: requests in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (2.32.4)
+Requirement already satisfied: tokenizers<0.22,>=0.21 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (0.21.1)
+Requirement already satisfied: safetensors>=0.4.3 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (0.5.3)
+Requirement already satisfied: tqdm>=4.27 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from transformers) (4.67.1)
+Requirement already satisfied: fsspec>=2023.5.0 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers) (2025.3.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers) (4.14.1)
+Requirement already satisfied: hf-xet<2.0.0,>=1.1.2 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from huggingface-hub<1.0,>=0.30.0->transformers) (1.1.5)
+Requirement already satisfied: charset_normalizer<4,>=2 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from requests->transformers) (3.4.2)
+Requirement already satisfied: idna<4,>=2.5 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from requests->transformers) (3.10)
+Requirement already satisfied: urllib3<3,>=1.21.1 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from requests->transformers) (2.5.0)
+Requirement already satisfied: certifi>=2017.4.17 in /root/miniconda3/envs/sft/lib/python3.11/site-packages (from requests->transformers) (2025.7.14)
+Installing collected packages: transformers
+Successfully installed transformers-4.53.2
