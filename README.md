@@ -4,7 +4,8 @@
 
 **Models:**  
 [🤗 Vision-SR1-7B](https://huggingface.co/LMMs-Lab-Turtle/SelfRewarded-R1-7B) | 
-[🤗 Vision-SR1-7B-Cold-Start](https://huggingface.co/LMMs-Lab-Turtle/Qwen-2.5VL-7B-Cold-Start)  
+[🤗 Vision-SR1-7B-Cold-Start](https://huggingface.co/LMMs-Lab-Turtle/Qwen-2.5VL-7B-Cold-Start) |
+[🤗 Vision-SR1-3B-Cold-Start](https://huggingface.co/LMMs-Lab-Turtle/Qwen-2.5VL-3B-Cold-Start)  
 
 **Datasets:**  
 [📊 Vision-SR1-47K](https://huggingface.co/datasets/LMMs-Lab-Turtle/Vision-SR1-47K) | 
