@@ -20,26 +20,18 @@
 
 LLM evaluation scripts and model generation outputs with LLM judgments is coming, stay tuned!
 
-## Features
+## 👀 About Vision-SR1
 
-- Supported models
-  - Llama3/Qwen2/Qwen2.5/Qwen3 language models
-  - Qwen2/Qwen2.5-VL vision language models
-  - DeepSeek-R1 distill models
+Vision-SR1 is a self-rewarded RL training framework to decompose VLMs' language reasoning into visual perception reasoning and language reasoning. Inspired by the awesome works of e.g. Vision-R1, Visionary-R1, R1-VL, we leverage VLM's self reasoning ability to 
 
-- Supported algorithms
-  - GRPO
-  - Reinforce++
-  - ReMax
-  - RLOO
+Inspired by DeepSeek-R1's success in eliciting reasoning abilities through rule-based RL, we introduce Video-R1 as **the first work to *systematically* explore the R1 paradigm for eliciting video reasoning** within MLLMs. 
 
-- Supported datasets
-  - Any text, vision-text dataset in a [specific format](#custom-dataset)
+We introduce T-GRPO, an extension of GRPO that incorporates temporal modeling to **explicitly promote temporal reasoning**. Besides, We constructed two datasets: **Video-R1-COT-165k** for SFT cold start and **Video-R1-260k** for RL training, both comprising image and video data.
 
-- Supported tricks
-  - Padding-free training
-  - Resuming from checkpoint
-  - Wandb & SwanLab & Mlflow & Tensorboard tracking
+Our Video-R1-7B obtain strong performance on several video reasoning benchmarks. For example, Video-R1-7B attains a 35.8% accuracy on video spatial reasoning benchmark VSI-bench, **surpassing the commercial proprietary model GPT-4o**.
+
+Vision-SR1 **can be easily trained** using 4 or 8 A100 (80G) GPUs.
+
 
 ## Requirements
 
