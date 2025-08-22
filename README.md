@@ -1,11 +1,15 @@
-# EasyR1: An Efficient, Scalable, Multi-Modality RL Training Framework
+# Vision-SR1
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/hiyouga/EasyR1)](https://github.com/hiyouga/EasyR1/stargazers)
-[![Twitter](https://img.shields.io/twitter/follow/llamafactory_ai)](https://twitter.com/llamafactory_ai)
+The official repo for "Self-Rewarding Vision-Language Model via Reasoning Decomposition".
 
-This project is a clean fork of the original [veRL](https://github.com/volcengine/verl) project to support vision language models, we thank all the authors for providing such a high-performance RL training framework.
+<p align="center">
+       🤗 <a href="https://huggingface.co/datasets/Osilly/Vision-R1-cold">Cold-start Dataset (Vision-R1-cold)</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/datasets/Osilly/Vision-R1-rl">RL Dataset (Vision-R1-rl)</a>&nbsp&nbsp
+</p>
 
-EasyR1 is efficient and scalable due to the design of **[HybirdEngine](https://arxiv.org/abs/2409.19256)** and the latest release of **[vLLM](https://github.com/vllm-project/vllm)**'s SPMD mode.
+<p align="center">
+       🤗 <a href="https://huggingface.co/Osilly/Vision-R1-CI-7B">Vision-R1-CI-7B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-7B">Vision-R1-7B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-32B">Vision-R1-32B</a>&nbsp&nbsp | &nbsp&nbsp🤗 <a href="https://huggingface.co/Osilly/Vision-R1-72B">Vision-R1-72B</a>&nbsp&nbsp | &nbsp&nbsp📑 <a href="https://arxiv.org/abs/2503.06749">Paper</a>&nbsp&nbsp
+</p>
+The datasets, code and weights will be released, stay tuned!
 
 ## Features
 
