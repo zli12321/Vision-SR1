@@ -39,20 +39,15 @@ Vision-SR1 **can be easily trained** using 4 or 8 A100 (80G) GPUs.
 
 ## Requirements
 
+The code base adopted from [verl](https://github.com/volcengine/verl) and [EasyR1](https://github.com/hiyouga/EasyR1).
+
 ### Software Requirements
 
 - Python 3.9+
-- transformers>=4.51.0
+- transformers>=4.49.0
 - flash-attn>=2.4.3
 - vllm>=0.8.3
 
-We provide a [Dockerfile](./Dockerfile) to easily build environments.
-
-We recommend using the [pre-built docker image](https://hub.docker.com/r/hiyouga/verl) in EasyR1.
-
-```bash
-docker pull hiyouga/verl:ngc-th2.6.0-cu126-vllm0.8.4-flashinfer0.2.2-cxx11abi0
-```
 
 ### Hardware Requirements
 
