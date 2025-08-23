@@ -65,6 +65,11 @@ bash ./train_examples/1-7b_visionR1_train.sh
 python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_step_1/actor
 ```
 
+### Generating Evaluation Responses
+```
+bash ./validation_examples/2-seethink_format_eval.sh
+```
+
 ### Hardware Requirements
 
 \* *estimated*
