@@ -44,10 +44,14 @@ The code base adopted from [verl](https://github.com/volcengine/verl) and [EasyR
 ### Software Requirements
 
 - Python 3.9+
-- transformers>=4.49.0
+- transformers=4.49.0
 - flash-attn>=2.4.3
 - vllm>=0.8.3
 
+### Setup
+```
+git clone 
+```
 
 ### Hardware Requirements
 
