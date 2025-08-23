@@ -26,13 +26,16 @@ Vision-SR1 is a self-rewarded RL training framework to decompose VLMs' language 
 
 Because VLMs fuse the vision encoder with the LLM backbone only late in pretraining, they often rely primarily on language reasoning rather than visual perception. Standard RL training tends to **recall prior language knowledge** for accuracy gains while **neglecting vision**. External LLM-based perception rewards can help but introduce bias and heavy latency. We instead propose a self-reward framework, enabling the model to provide its own visual and reasoning feedback with **no latency**.
 
-Besides vision decomposition, We constructed two datasets: **Vsion-SR1-Cold-9K** for SFT and **Vision-SR1-47K ** for RL.
+Besides vision decomposition, We constructed two datasets: **Vsion-SR1-Cold-9K** for SFT and **Vision-SR1-47K** for RL.
 
 Vision-SR1 **can be easily trained** using 4 or 8 A100 (80G) GPUs.
 
 <p align="center">
     <img src="./assets/method.png" width="80%">
 </p>
+
+
+
 
 ## Requirements
 
