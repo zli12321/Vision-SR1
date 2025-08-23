@@ -28,8 +28,6 @@ Because VLMs fuse the vision encoder with the LLM backbone only late in pretrain
 
 Besides vision decomposition, We constructed two datasets: **Vsion-SR1-Cold-9K** for SFT and **Vision-SR1-47K** for RL.
 
-Vision-SR1 **can be easily trained** using 4 or 8 A100 (80G) GPUs.
-
 <p align="center">
     <img src="./assets/method.png" width="80%">
 </p>
@@ -45,27 +43,39 @@ The code base adopted from [verl](https://github.com/volcengine/verl) and [EasyR
 
 - Python 3.9+
 - transformers=4.49.0
-- flash-attn>=2.4.3
-- vllm>=0.8.3
 
-### Setup
+### RL Training Setup
 ```
-git clone 
+git clone https://github.com/zli12321/Vision-SR1.git
+cd Vision-SR1
+bash setup.sh
+```
+
+### GRPO Training
+```
+### Self-Reward Vision-SR1 GRPO Training
+bash ./train_examples/2-7b_selfReward_train.sh
+
+### Vision-SR1 regular training
+bash ./train_examples/1-7b_visionR1_train.sh
+```
+
+### Merge checkpoints
+```
+python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_step_1/actor
 ```
 
 ### Hardware Requirements
 
 \* *estimated*
 
-| Method                   | Bits |  1.5B  |   3B   |   7B   |   32B   |
-| ------------------------ | ---- | ------ | ------ | ------ | ------- |
-| GRPO Full Fine-Tuning    |  AMP | 2*24GB | 4*40GB | 8*40GB | 16*80GB |
-| GRPO Full Fine-Tuning    | BF16 | 1*24GB | 1*40GB | 4*40GB |  8*80GB |
+| Method                   | Bits |    3B   |   7B   |  
+| ------------------------ | ---- |  ------ | ------ | 
+| GRPO Full Fine-Tuning    |  AMP |  4 or 8*40GB | 4 or 8*80GB | 
 
 > [!NOTE]
-> Use `worker.actor.fsdp.torch_dtype=bf16` and `worker.actor.optim.strategy=adamw_bf16` to enable bf16 training.
->
-> We are working hard to reduce the VRAM in RL training, LoRA support will be integrated in next updates.
+> Use `worker.actor.fsdp.torch_dtype=bf16` and `worker.actor.optim.strategy=adamw_bf16` to enable bf16 training with fewer memory.
+
 
 ## Tutorial: Run Qwen2.5-VL GRPO on [Geometry3K](https://huggingface.co/datasets/hiyouga/geometry3k) Dataset in Just 3 Steps
 
