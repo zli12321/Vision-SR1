@@ -69,6 +69,9 @@ python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_
 ```
 bash ./validation_examples/2-seethink_format_eval.sh
 ```
+### Reward Progression in training
+
+![image](assets/reward_progression.png)
 
 ### Hardware Requirements
 
@@ -82,35 +85,6 @@ bash ./validation_examples/2-seethink_format_eval.sh
 > Use `worker.actor.fsdp.torch_dtype=bf16` and `worker.actor.optim.strategy=adamw_bf16` to enable bf16 training with fewer memory.
 
 
-## Tutorial: Run Qwen2.5-VL GRPO on [Geometry3K](https://huggingface.co/datasets/hiyouga/geometry3k) Dataset in Just 3 Steps
-
-![image](assets/qwen2_5_vl_7b_geo.png)
-
-### Installation
-
-```bash
-git clone https://github.com/hiyouga/EasyR1.git
-cd EasyR1
-pip install -e .
-```
-
-### GRPO Training
-
-```bash
-bash examples/qwen2_5_vl_7b_geo3k_grpo.sh
-```
-
-### Merge Checkpoint in Hugging Face Format
-
-```bash
-python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_step_1/actor
-```
-
-> [!TIP]
-> If you encounter issues with connecting to Hugging Face, consider using `export HF_ENDPOINT=https://hf-mirror.com`.
->
-> If you want to use SwanLab logger, consider using `bash examples/qwen2_5_vl_7b_geo3k_swanlab.sh`.
-
 ## Custom Dataset
 
 Please refer to the example datasets to prepare your own dataset.
@@ -119,45 +93,6 @@ Please refer to the example datasets to prepare your own dataset.
 - Image-text dataset: https://huggingface.co/datasets/hiyouga/geometry3k
 - Multi-image-text dataset: https://huggingface.co/datasets/hiyouga/journeybench-multi-image-vqa
 
-## How to Understand GRPO in EasyR1
-
-![image](assets/easyr1_grpo.png)
-
-- To learn about the GRPO algorithm, you can refer to [Hugging Face's blog](https://huggingface.co/docs/trl/v0.16.1/en/grpo_trainer).
-
-## How to Run 70B+ Model in Multi-node Environment
-
-1. Start the Ray head node.
-
-```bash
-ray start --head --port=6379 --dashboard-host=0.0.0.0
-```
-
-2. Start the Ray worker node and connect to the head node.
-
-```bash
-ray start --address=<head_node_ip>:6379
-```
-
-3. Check the Ray resource pool.
-
-```bash
-ray status
-```
-
-4. Run training script on the Ray head node only.
-
-```bash
-bash examples/qwen2_5_vl_7b_geo3k_grpo.sh
-```
-
-See the **[veRL's official doc](https://verl.readthedocs.io/en/latest/start/multinode.html)** for more details about multi-node training and Ray debugger.
-
-## Other Baselines
-
-We also reproduced the following two baselines of the [R1-V](https://github.com/deep-agent/R1-V) project.
-- [CLEVR-70k-Counting](examples/baselines/qwen2_5_vl_3b_clevr.sh): Train the Qwen2.5-VL-3B-Instruct model on counting problem.
-- [GeoQA-8k](examples/baselines/qwen2_5_vl_3b_geoqa8k.sh): Train the Qwen2.5-VL-3B-Instruct model on GeoQA problem.
 
 ## Performance Baselines
 
