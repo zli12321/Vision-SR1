@@ -33,6 +33,12 @@ Besides vision decomposition, We constructed two datasets: **Vsion-SR1-Cold-9K**
 </p>
 
 
+### 🔍 Dataset
+Our training dataset is sourced from 23 sources and evenly split across three main areas-- general visual understanding, science knowledge, multimodal mathematical reasoning.
+
+<p align="center">
+    <img src="./assets/data.png" width="80%">
+</p>
 
 
 ## Requirements
@@ -48,6 +54,7 @@ The code base adopted from [verl](https://github.com/volcengine/verl) and [EasyR
 ```
 git clone https://github.com/zli12321/Vision-SR1.git
 cd Vision-SR1
+conda create -n Vision-SR1 python=3.11
 bash setup.sh
 ```
 
@@ -72,6 +79,27 @@ bash ./validation_examples/2-seethink_format_eval.sh
 ### Reward Progression in training
 
 ![image](assets/reward_progression.png)
+
+
+### Supervised Finetuning
+The supervised finetuning code is adopted from [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for easy setup.
+
+
+#### Setup
+```
+conda create -n SFT python=3.11
+cd LLaMA-Factory-Cold-Start
+pip install -e ".[torch,metrics]" --no-build-isolation
+
+pip install --upgrade huggingface_hub
+huggingface-cli login
+```
+
+
+#### Training
+```
+FORCE_TORCHRUN=1 llamafactory-cli train examples/train_full/Vision-SR1-Cold-Start.yaml
+```
 
 ### Hardware Requirements
 
