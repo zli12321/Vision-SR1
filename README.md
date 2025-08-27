@@ -75,6 +75,13 @@ python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_
 ```
 bash ./validation_examples/2-seethink_format_eval.sh
 ```
+
+### LLM-as-a-Judge Evaluation
+```
+All model historic responses and LLM eval scripts are in progress. Will be released in a few days.
+```
+
+
 ### Reward Progression in training
 
 ![image](assets/reward_progression.png)
