@@ -13,8 +13,7 @@
 
 
 **Training Curves:**  
-[📈 Vision-SR1](https://api.wandb.ai/links/zli12321-university-of-maryland/85ed11ft) | 
-[📈 Vision-R1](https://api.wandb.ai/links/zli12321-university-of-maryland/imqgqh7t)  
+[📈 Vision-SR1](https://api.wandb.ai/links/zli12321-university-of-maryland/85ed11ft) 
 
 ---
 
