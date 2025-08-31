@@ -90,6 +90,10 @@ All model historic responses and LLM eval scripts are in progress. Will be relea
 ### Supervised Finetuning
 The supervised finetuning code is adopted from [LLaMA-Factory](https://github.com/hiyouga/LLaMA-Factory) for easy setup.
 
+### Download the filtered SFT format data
+```
+python download-sft-data.py
+```
 
 #### Setup
 ```
@@ -101,11 +105,13 @@ pip install --upgrade huggingface_hub
 huggingface-cli login
 ```
 
-
 #### Training
 ```
 FORCE_TORCHRUN=1 llamafactory-cli train examples/train_full/Vision-SR1-Cold-Start.yaml
 ```
+
+### Troubleshoot
+If you still encounter errors after you follow th setup, simply clone the original LLaMA-Factory repo and follow their setup. Download the [dataset](https://huggingface.co/datasets/LMMs-Lab-Turtle/Vision-SR1-Cold-9K/tree/main) and place into the LLaMA-Factory [data folder](https://github.com/hiyouga/LLaMA-Factory/tree/main/data). Place the [Vision-SR1-Cold-Start.yaml](https://github.com/zli12321/Vision-SR1/blob/main/LLaMA-Factory-Cold-Start/examples/train_full/Vision-SR1-Cold-Start.yaml) file into the LLaMA-Factory [SFT training folder](https://github.com/hiyouga/LLaMA-Factory/tree/main/examples/train_full).
 
 ### Hardware Requirements
 
