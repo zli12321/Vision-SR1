@@ -175,3 +175,4 @@ outputs/
 checkpoints/
 wandb/
 wandb_offline/
+LLaMA-Factory-Cold-Start/data/cold_start//.LLaMA-Factory-Cold-Start/
