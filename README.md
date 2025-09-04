@@ -77,26 +77,27 @@ python3 scripts/model_merger.py --local_dir checkpoints/easy_r1/exp_name/global_
 - NOTE 1: We use Gemini-2.5-flash as the Judge. Different LLM judges will result in different evaluation results. For reference, we also comput the rule-based evaluation accuracies, which is lower than LLM-as-Judges on Math datasets.
 - NOTE 2: We only use LLM-as-a-Judge for some of the datasets. For multiple choice datasets mmmu-pro-vision, mmmu-pro-10-options, visnumbench, hallusionbench, we use string matching to save time and costs.
 
-0. We provide all the historic LLM generations for a quick reference and access to the results
+0. ##### Using Existing LLM Evaluations
+We provide all the historic LLM generations for a quick reference and access to the results
 ```
 python download_precomputed_evaluation_files.py
 cd Evaluation
 ./get_eval_result.sh
 ```
 
-1. Generating Evaluation Responses for the models
+1. ##### Generating Evaluation Responses for the models
 ```
 bash ./validation_examples/2-seethink_format_eval.sh
 ```
 
-2. Use LLM-as-a-judge to generate result
+2. ##### Use LLM-as-a-judge to generate result
 ```
 cd Evaluation
 python LLM_eval.py --input_dir ./Raw-Outputs/7B-Vision-SR1(The folder that contains the generated responses) --output_dir ./Raw-Outputs/LLM-Eval-out/7B-Vision-SR1(The output folder with LLM responses)
 ```
 For LLM-as-a-judge, check ```Evaluation/utils/gemini_eval.py```. You can implement the generate() function that uses any LLM to evaluate.
 
-3. Compute Evaluation Results
+3. ##### Compute Evaluation Results
 ```
 python eval.py --llm_eval_dir ./Raw-Outputs/7B-Vision-SR1(The LLM Eval output responses) --mcq_dir ./Raw-Outputs/LLM-Eval-out/7B-Vision-SR1(The MCQ Eval Responses)
 ```
