@@ -7,7 +7,7 @@ set -euo pipefail
 export PYTHONUNBUFFERED=1
 
 MODEL_PATH=Qwen/Qwen2.5-VL-7B-Instruct 
-SAVE_PATH=7b_baseline
+SAVE_PATH=7B-baseline
 
 DATASETS=(
   "zli12321/mmlu_pro"
@@ -30,7 +30,7 @@ BASE_CMD="python3 -m verl.trainer.main \
   worker.rollout.n=8 \
   trainer.total_epochs=20 \
   trainer.experiment_name=qwen2_5_vl_text_only_eval \
-  trainer.save_checkpoint_path=./saves/Evals \
+  trainer.save_checkpoint_path=./Evaluation/Raw-Outputs \
   trainer.n_gpus_per_node=8 \
   worker.actor.micro_batch_size_per_device_for_experience=1 \
   worker.actor.global_batch_size=8 \

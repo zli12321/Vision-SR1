@@ -9,10 +9,10 @@ export PYTHONUNBUFFERED=1
 ## Generates responses for model using the CoT format 
 
 MODEL_PATH=Qwen/Qwen2.5-VL-7B-Instruct 
-SAVE_PATH=7b_baseline
+SAVE_PATH=7B-baseline
 
 # MODEL_PATH=LMMs-Lab-Turtle/Qwen-2.5VL-7B-Cold-Start
-# SAVE_PATH=7b_SFT_ColdStart
+# SAVE_PATH=7B-SFT
 
 
 DATASETS=(
@@ -22,7 +22,6 @@ DATASETS=(
   ""zli12321/mmmu_pro_10options""
   "zli12321/mmmu-pro-vision"
   "zli12321/hallusionbench"
-  "zli12321/pope"
   "zli12321/MMMU"
 )
 
@@ -40,7 +39,7 @@ BASE_CMD="python3 -m verl.trainer.main \
   worker.rollout.n=8 \
   trainer.total_epochs=1 \
   trainer.experiment_name=qwen2_5_vl_7b_cot_eval \
-  trainer.save_checkpoint_path=./saves/Evals \
+  trainer.save_checkpoint_path=./Evaluation/Raw-Outputs \
   trainer.n_gpus_per_node=8 \
   worker.actor.micro_batch_size_per_device_for_experience=1 \
   worker.actor.global_batch_size=8 \
