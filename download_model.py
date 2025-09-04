@@ -2,9 +2,9 @@
 from huggingface_hub import snapshot_download
 
 # ---- fill these in ----
-repo_id   = "Qwen/Qwen2.5-VL-3B-Instruct"   
+repo_id   = "Qwen/Qwen2.5-VL-7B-Instruct"   
 repo_type = "model"                 # "model" | "dataset" | "space"
-target    = "../Models/Qwen2.5-VL-3B-Instruct"     # where to put the data
+target    = "../Models/Qwen2.5-VL-7B-Instruct"     # where to put the data
 revision  = None                   
 
 # If it's a private repo, set HF token:
