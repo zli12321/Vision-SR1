@@ -2,9 +2,9 @@
 from huggingface_hub import snapshot_download
 
 # ---- fill these in ----
-repo_id   = "DingZhenDojoCat/Evaluation"   
+repo_id   = "DingZhenDojoCat/Raw-Outputs"   
 repo_type = "dataset"                 # "model" | "dataset" | "space"
-target    = "./Evaluation"     # where to put the data
+target    = "./Evaluation/Raw-Outputs"     # where to put the data
 revision  = None                   
 
 # If it's a private repo, set HF token:
