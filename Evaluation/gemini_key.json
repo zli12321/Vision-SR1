@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "YOUR_PROJECT_ID",
+  "private_key_id": "PRIVATE_KEY_ID",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n{YOUR_PRIVATE_KEY_HERE}\n-----END PRIVATE KEY-----\n",
+  "client_email": "ailab01@tencent-gemini-omd01.iam.gserviceaccount.com",
+  "client_id": "104935904768461518534",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ailab01%40tencent-gemini-omd01.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

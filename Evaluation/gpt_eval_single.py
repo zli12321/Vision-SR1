@@ -30,11 +30,10 @@ def read_jsonl(path: Path) -> list[dict]:
 
 
 
-# ONLY_FILE = "hallusionbench"
 ONLY_FILE = "MLLM_test"
 
 INPUT_DIR  = Path('./Raw-Outputs/7B-Vision-SR1')
-OUTPUT_DIR = Path('./Raw-Outputs/7b_Vision-SR1-v2')
+OUTPUT_DIR = Path('./Raw-Outputs/LLM-Eval-out/7B-Vision-SR1')
 
 try:
     ds = load_dataset(f'zli12321/{ONLY_FILE}')
