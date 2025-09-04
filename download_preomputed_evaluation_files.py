@@ -2,9 +2,9 @@
 from huggingface_hub import snapshot_download
 
 # ---- fill these in ----
-repo_id   = "LMMs-Lab-Turtle/Vision-SR1-Cold-9K"   
+repo_id   = "DingZhenDojoCat/Evaluation"   
 repo_type = "dataset"                 # "model" | "dataset" | "space"
-target    = "./LLaMA-Factory-Cold-Start/data"     # where to put the data
+target    = "./Evaluation"     # where to put the data
 revision  = None                   
 
 # If it's a private repo, set HF token:
