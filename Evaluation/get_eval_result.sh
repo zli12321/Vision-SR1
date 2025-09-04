@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # ---------------------------------------------------------------
-# Flags your eval.py expects.
-# Change these only if you renamed the CLI arguments in eval.py.
+# Flags your eval_result.py expects.
+# Change these only if you renamed the CLI arguments in eval_result.py.
 # ---------------------------------------------------------------
 CMD_EVAL="--llm_eval_dir"
 CMD_MCQ="--mcq_dir"
@@ -57,7 +57,7 @@ for entry in "${CONFIGS[@]}"; do
   echo "    MCQ dir     : ${MCQ_DIR}"
   echo "------------------------------------------------------------------"
 
-  "$python_bin" eval.py \
+  "$python_bin" eval_result.py \
       ${CMD_EVAL} "${EVAL_DIR}" \
       ${CMD_MCQ}  "${MCQ_DIR}"
 done
