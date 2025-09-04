@@ -159,7 +159,15 @@ Please refer to the example datasets to prepare your own dataset.
 If you find our works helpful, please cite
 
 ```bibtex
-
+@misc{li2025selfrewardingvisionlanguagemodelreasoning,
+      title={Self-Rewarding Vision-Language Model via Reasoning Decomposition}, 
+      author={Zongxia Li and Wenhao Yu and Chengsong Huang and Rui Liu and Zhenwen Liang and Fuxiao Liu and Jingxi Che and Dian Yu and Jordan Boyd-Graber and Haitao Mi and Dong Yu},
+      year={2025},
+      eprint={2508.19652},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2508.19652}, 
+}
 ```
 
 We recommend to also cite the sourcecode work.
