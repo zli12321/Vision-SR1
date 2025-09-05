@@ -23,8 +23,8 @@ python3 -m verl.trainer.main \
     trainer.experiment_name=qwen2_5_vl_7b_selfReward_grpo \
     trainer.save_checkpoint_path=./saves/7b_grpo_selfReward \
     trainer.n_gpus_per_node=8 \
-    worker.actor.micro_batch_size_per_device_for_update=8 \
-    worker.actor.micro_batch_size_per_device_for_experience=16 \
+    worker.actor.micro_batch_size_per_device_for_update=4 \
+    worker.actor.micro_batch_size_per_device_for_experience=8 \
     trainer.val_before_train=true \
     trainer.val_only=false
 
