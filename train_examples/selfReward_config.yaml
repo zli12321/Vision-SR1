@@ -86,7 +86,7 @@ trainer:
   max_steps: null
   project_name: selfReward
   experiment_name: selfReward_GRPO_VL_TRAIN
-  logger: ["console", "wandb"]
+  logger: ["console"]
   nnodes: 1
   n_gpus_per_node: 8
   val_freq: 5  # -1 to disable
