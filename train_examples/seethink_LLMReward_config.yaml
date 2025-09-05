@@ -86,7 +86,7 @@ trainer:
   max_steps: null
   project_name: llmEval
   experiment_name: qwen2_5_vl_7b_math_grpo_group8
-  logger: ["console", "wandb"]
+  logger: ["console"]
   nnodes: 1
   n_gpus_per_node: 8
   val_freq: 5  # -1 to disable
