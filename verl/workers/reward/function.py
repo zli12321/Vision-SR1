@@ -132,6 +132,53 @@ class SequentialFunctionRewardManager(FunctionRewardManager):
 
 #         return reward_tensor, reward_metrics
 
+# from collections import defaultdict
+# from typing import Tuple, Dict, List
+# import torch
+
+# class BatchFunctionRewardManager(FunctionRewardManager):
+#     reward_fn: BatchRewardFunction
+
+#     def compute_reward(self, data: DataProto) -> Tuple[torch.Tensor, Dict[str, List[float]]]:
+#         response_str, ground_truth, questions, description_answers = [], [], [], []
+
+#         response_ids   = data.batch["responses"]
+#         response_len   = data.batch["response_mask"].sum(dim=-1)
+#         # ➊ pull once to avoid repeated dict look-ups
+#         gt_arr         = data.non_tensor_batch["ground_truth"]
+#         qn_arr         = data.non_tensor_batch["question"]
+#         desc_arr       = data.non_tensor_batch.get("description_answers", None)
+
+#         for i in range(len(data)):
+#             valid_ids = response_ids[i][: response_len[i]]
+#             response_str.append(
+#                 self.tokenizer.decode(
+#                     valid_ids, skip_special_tokens=self.config.skip_special_tokens
+#                 )
+#             )
+#             ground_truth.append(gt_arr[i])
+#             questions.append(qn_arr[i])
+
+#             # if description_answers provided, align it; else use ""
+#             description_answers.append("" if desc_arr is None else desc_arr[i])
+
+#         # ➋ call the 4-arg reward function
+#         scores = self.reward_fn(
+#             response_str, ground_truth, questions, description_answers
+#         )
+
+#         # same tensor ​+ metric aggregation as before
+#         reward_tensor  = torch.zeros_like(data.batch["responses"], dtype=torch.float32)
+#         reward_metrics = defaultdict(list)
+#         for i, score in enumerate(scores):
+#             reward_tensor[i, response_len[i] - 1] = score["overall"]
+#             for k, v in score.items():
+#                 reward_metrics[k].append(v)
+
+#         return reward_tensor, reward_metrics
+
+
+
 from collections import defaultdict
 from typing import Tuple, Dict, List
 import torch
@@ -167,13 +214,31 @@ class BatchFunctionRewardManager(FunctionRewardManager):
             response_str, ground_truth, questions, description_answers
         )
 
-        # same tensor ​+ metric aggregation as before
-        reward_tensor  = torch.zeros_like(data.batch["responses"], dtype=torch.float32)
-        reward_metrics = defaultdict(list)
-        for i, score in enumerate(scores):
-            reward_tensor[i, response_len[i] - 1] = score["overall"]
-            for k, v in score.items():
-                reward_metrics[k].append(v)
+        B, T = data.batch["responses"].shape
+        device = data.batch["responses"].device
+        token_mask = data.batch["response_mask"]       # (B, T)
 
-        return reward_tensor, reward_metrics
+        # allocate (B, T, 2)   ← TWO reward channels
+        token_level = torch.zeros(B, T, 2,
+                                dtype=torch.float32, device=device)
+
+
+        for i, score in enumerate(scores):
+            # last = token_mask[i].sum() - 1             # index of last answer token
+            # ── index of the final token in the i-th response
+            last = int(response_len[i].item()                # tensor → python int
+                    if torch.is_tensor(response_len[i])
+                    else response_len[i]) - 1
+
+            token_level[i, last, 0] = score["accuracy"]
+            token_level[i, last, 1] = score["description_accuracy"]
+
+        # collect metrics
+        metrics = defaultdict(list)
+        for s in scores:
+            for k, v in s.items():
+                metrics[k].append(v)
+
+        return token_level, metrics                    
+
 

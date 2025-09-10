@@ -205,61 +205,174 @@ class DataParallelPPOActor(BasePPOActor):
         log_probs = torch.concat(log_probs_lst, dim=0)
         return log_probs
 
+    # def update_policy(self, data: DataProto) -> Dict[str, Any]:
+    #     self.actor_module.train()
+
+    #     temperature = data.meta_info["temperature"]  # temperature must be in the data.meta_info to avoid slient error
+    #     select_keys = ["responses", "input_ids", "attention_mask", "position_ids", "old_log_probs", "advantages"]
+    #     if self.config.use_kl_loss and not self.config.disable_kl:
+    #         select_keys.append("ref_log_probs")
+
+    #     if "multi_modal_inputs" in data.non_tensor_batch.keys():
+    #         non_tensor_select_keys = ["multi_modal_inputs"]
+    #     else:
+    #         non_tensor_select_keys = []
+
+    #     # Split to make minibatch iterator for updating the actor
+    #     # See PPO paper for details. https://arxiv.org/abs/1707.06347
+    #     mini_batches = data.select(select_keys, non_tensor_select_keys).split(self.config.global_batch_size_per_device)
+
+    #     metrics = defaultdict(list)
+    #     for _ in range(self.config.ppo_epochs):
+    #         if self.rank == 0:
+    #             mini_batches = tqdm(mini_batches, desc="Train mini-batches", position=2)
+
+    #         for mini_batch in mini_batches:
+    #             gradient_accumulation = (
+    #                 self.config.global_batch_size_per_device // self.config.micro_batch_size_per_device_for_update
+    #             )
+    #             micro_batches = mini_batch.split(self.config.micro_batch_size_per_device_for_update)
+    #             if self.rank == 0:
+    #                 micro_batches = tqdm(micro_batches, desc="Update policy", position=3)
+
+    #             for micro_batch in micro_batches:
+    #                 model_inputs = {**micro_batch.batch, **micro_batch.non_tensor_batch}
+    #                 responses = model_inputs["responses"]
+    #                 response_length = responses.size(1)
+    #                 attention_mask = model_inputs["attention_mask"]
+    #                 response_mask = attention_mask[:, -response_length:]
+    #                 old_log_probs = model_inputs["old_log_probs"]
+    #                 advantages = model_inputs["advantages"]
+
+    #                 # all return: (bsz, response_length)
+    #                 log_probs = self._forward_micro_batch(model_inputs, temperature=temperature)
+    #                 entropy_loss = -VF.masked_mean(log_probs, response_mask)  # estimator of entropy loss
+
+    #                 pg_loss, pg_clipfrac_higher, pg_clipfrac_lower, ppo_kl = core_algos.compute_policy_loss(
+    #                     old_log_probs=old_log_probs,
+    #                     log_probs=log_probs,
+    #                     advantages=advantages,
+    #                     response_mask=response_mask,
+    #                     clip_ratio_low=self.config.clip_ratio_low,
+    #                     clip_ratio_high=self.config.clip_ratio_high,
+    #                     clip_ratio_dual=self.config.clip_ratio_dual,
+    #                 )
+    #                 if "ref_log_probs" in model_inputs:
+    #                     ref_log_probs = model_inputs["ref_log_probs"]
+    #                     # compute kl loss
+    #                     kld = core_algos.compute_kl(
+    #                         log_probs=log_probs,
+    #                         ref_log_probs=ref_log_probs,
+    #                         kl_penalty=self.config.kl_penalty,
+    #                     )
+    #                     kl_loss = VF.masked_mean(kld, response_mask)
+    #                     pg_loss = pg_loss + kl_loss * self.config.kl_coef
+    #                     metrics["actor/kl_loss"] = kl_loss.detach().item()
+    #                     metrics["actor/kl_coef"] = self.config.kl_coef
+
+    #                 loss = pg_loss / gradient_accumulation
+    #                 loss.backward()
+
+    #                 batch_metrics = {
+    #                     "actor/pg_loss": pg_loss.detach().item(),
+    #                     "actor/pg_clipfrac_higher": pg_clipfrac_higher.detach().item(),
+    #                     "actor/pg_clipfrac_lower": pg_clipfrac_lower.detach().item(),
+    #                     "actor/entropy_loss": entropy_loss.detach().item(),
+    #                     "actor/ppo_kl": ppo_kl.detach().item(),
+    #                 }
+    #                 append_to_dict(metrics, batch_metrics)
+
+    #             grad_norm = self._optimizer_step()
+    #             append_to_dict(metrics, {"actor/grad_norm": grad_norm.detach().item()})
+
+    #     return metrics
+
+
     def update_policy(self, data: DataProto) -> Dict[str, Any]:
+        """
+        Supports either                 advantages.shape == (B, T)
+        or multi-reward advantages.shape == (B, T, K)
+        """
         self.actor_module.train()
 
-        temperature = data.meta_info["temperature"]  # temperature must be in the data.meta_info to avoid slient error
-        select_keys = ["responses", "input_ids", "attention_mask", "position_ids", "old_log_probs", "advantages"]
+        temperature = data.meta_info["temperature"]            # set by trainer
+        select_keys = ["responses", "input_ids", "attention_mask",
+                    "position_ids", "old_log_probs", "advantages"]
         if self.config.use_kl_loss and not self.config.disable_kl:
             select_keys.append("ref_log_probs")
 
-        if "multi_modal_inputs" in data.non_tensor_batch.keys():
-            non_tensor_select_keys = ["multi_modal_inputs"]
-        else:
-            non_tensor_select_keys = []
+        # for vision-language batches
+        non_tensor_select_keys = ["multi_modal_inputs"] \
+            if "multi_modal_inputs" in data.non_tensor_batch else []
 
-        # Split to make minibatch iterator for updating the actor
-        # See PPO paper for details. https://arxiv.org/abs/1707.06347
-        mini_batches = data.select(select_keys, non_tensor_select_keys).split(self.config.global_batch_size_per_device)
+        mini_batches = data.select(select_keys,
+                                non_tensor_select_keys)\
+                        .split(self.config.global_batch_size_per_device)
 
         metrics = defaultdict(list)
+
         for _ in range(self.config.ppo_epochs):
             if self.rank == 0:
                 mini_batches = tqdm(mini_batches, desc="Train mini-batches", position=2)
 
             for mini_batch in mini_batches:
-                gradient_accumulation = (
-                    self.config.global_batch_size_per_device // self.config.micro_batch_size_per_device_for_update
+                grad_acc_steps = (self.config.global_batch_size_per_device //
+                                self.config.micro_batch_size_per_device_for_update)
+                micro_batches = mini_batch.split(
+                    self.config.micro_batch_size_per_device_for_update
                 )
-                micro_batches = mini_batch.split(self.config.micro_batch_size_per_device_for_update)
                 if self.rank == 0:
                     micro_batches = tqdm(micro_batches, desc="Update policy", position=3)
 
                 for micro_batch in micro_batches:
                     model_inputs = {**micro_batch.batch, **micro_batch.non_tensor_batch}
-                    responses = model_inputs["responses"]
-                    response_length = responses.size(1)
-                    attention_mask = model_inputs["attention_mask"]
-                    response_mask = attention_mask[:, -response_length:]
-                    old_log_probs = model_inputs["old_log_probs"]
-                    advantages = model_inputs["advantages"]
+                    responses        = model_inputs["responses"]
+                    response_length  = responses.size(1)
+                    attention_mask   = model_inputs["attention_mask"]
+                    response_mask    = attention_mask[:, -response_length:]
 
-                    # all return: (bsz, response_length)
-                    log_probs = self._forward_micro_batch(model_inputs, temperature=temperature)
-                    entropy_loss = -VF.masked_mean(log_probs, response_mask)  # estimator of entropy loss
+                    old_log_probs = model_inputs["old_log_probs"]          # (B,T)
+                    advantages    = model_inputs["advantages"]             # (B,T) or (B,T,K)
 
-                    pg_loss, pg_clipfrac_higher, pg_clipfrac_lower, ppo_kl = core_algos.compute_policy_loss(
-                        old_log_probs=old_log_probs,
-                        log_probs=log_probs,
-                        advantages=advantages,
-                        response_mask=response_mask,
-                        clip_ratio_low=self.config.clip_ratio_low,
-                        clip_ratio_high=self.config.clip_ratio_high,
-                        clip_ratio_dual=self.config.clip_ratio_dual,
+                    # forward pass → new log-probs (B,T)
+                    log_probs = self._forward_micro_batch(
+                        model_inputs, temperature=temperature
                     )
+
+                    # entropy (uninfluenced by rewards)
+                    entropy_loss = -VF.masked_mean(log_probs, response_mask)
+
+                    # -------  NEW: handle multi-reward advantages  -------
+                    if advantages.dim() == 2:                      # (B,T)
+                        advantages = advantages.unsqueeze(-1)      # (B,T,1)
+
+                    K = advantages.size(-1)
+                    pg_loss, clip_hi, clip_lo, ppo_kl = 0.0, 0.0, 0.0, 0.0
+
+                    for k in range(K):
+                        adv_k = advantages[..., k]                 # (B,T)
+                        loss_k, hi_k, lo_k, kl_k = core_algos.compute_policy_loss(
+                            old_log_probs=old_log_probs,
+                            log_probs=log_probs,
+                            advantages=adv_k,                     # λₖ already folded in
+                            response_mask=response_mask,
+                            clip_ratio_low=self.config.clip_ratio_low,
+                            clip_ratio_high=self.config.clip_ratio_high,
+                            clip_ratio_dual=self.config.clip_ratio_dual,
+                        )
+                        pg_loss += loss_k
+                        clip_hi += hi_k
+                        clip_lo += lo_k
+                        ppo_kl  += kl_k
+                    # average the diagnostic fractions over K channels
+                    clip_hi /= K
+                    clip_lo /= K
+                    ppo_kl  /= K
+                    # ------------------------------------------------------
+
+                    # optional KL term versus reference policy
                     if "ref_log_probs" in model_inputs:
                         ref_log_probs = model_inputs["ref_log_probs"]
-                        # compute kl loss
                         kld = core_algos.compute_kl(
                             log_probs=log_probs,
                             ref_log_probs=ref_log_probs,
@@ -270,13 +383,13 @@ class DataParallelPPOActor(BasePPOActor):
                         metrics["actor/kl_loss"] = kl_loss.detach().item()
                         metrics["actor/kl_coef"] = self.config.kl_coef
 
-                    loss = pg_loss / gradient_accumulation
-                    loss.backward()
+                    # gradient accumulation
+                    (pg_loss / grad_acc_steps).backward()
 
                     batch_metrics = {
                         "actor/pg_loss": pg_loss.detach().item(),
-                        "actor/pg_clipfrac_higher": pg_clipfrac_higher.detach().item(),
-                        "actor/pg_clipfrac_lower": pg_clipfrac_lower.detach().item(),
+                        "actor/pg_clipfrac_higher": clip_hi.detach().item(),
+                        "actor/pg_clipfrac_lower":  clip_lo.detach().item(),
                         "actor/entropy_loss": entropy_loss.detach().item(),
                         "actor/ppo_kl": ppo_kl.detach().item(),
                     }

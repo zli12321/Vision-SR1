@@ -4,9 +4,8 @@ set -x
 
 export PYTHONUNBUFFERED=1
 
-# MODEL_PATH=Qwen/Qwen2.5-VL-3B-Instruct
+MODEL_PATH=Qwen/Qwen2.5-VL-3B-Instruct
 # MODEL_PATH=LMMs-Lab-Turtle/Qwen-2.5VL-3B-Cold-Start
-MODEL_PATH=../Models/Qwen2.5-VL-3B-Instruct  
 
 
 python3 -m verl.trainer.main \
@@ -22,9 +21,12 @@ python3 -m verl.trainer.main \
     trainer.total_epochs=1 \
     trainer.experiment_name=qwen2_5_vl_3b_selfReward_grpo \
     trainer.save_checkpoint_path=./saves/3b_grpo_selfReward \
-    trainer.n_gpus_per_node=8 \
-    worker.actor.micro_batch_size_per_device_for_update=8 \
-    worker.actor.micro_batch_size_per_device_for_experience=16 \
-    trainer.val_before_train=true \
+    worker.actor.fsdp.torch_dtype=bf16 \
+    worker.actor.optim.strategy=adamw_bf16 \
+    trainer.n_gpus_per_node=4 \
+    worker.actor.micro_batch_size_per_device_for_update=1 \
+    worker.actor.micro_batch_size_per_device_for_experience=1 \
+    worker.actor.global_batch_size=1 \
+    trainer.val_before_train=false \
     trainer.val_only=false
 

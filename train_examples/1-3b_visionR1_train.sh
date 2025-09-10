@@ -6,7 +6,8 @@ export PYTHONUNBUFFERED=1
 
 # MODEL_PATH=Qwen/Qwen2.5-VL-3B-Instruct  
 # MODEL_PATH=LMMs-Lab-Turtle/Qwen-2.5VL-3B-Cold-Start
-MODEL_PATH=../Models/Qwen2.5-VL-3B-Instruct  
+# MODEL_PATH=../Models/Qwen2.5-VL-3B-Instruct  
+MODEL_PATH=/fs/clip-scratch/zongxia/Qwen2.5-VL-3B-Instruct　　
 
 python3 -m verl.trainer.main \
     config=train_examples/cot_config.yaml \
@@ -20,7 +21,12 @@ python3 -m verl.trainer.main \
     worker.rollout.n=8 \
     trainer.total_epochs=1 \
     trainer.experiment_name=qwen2_5_vl_3b_cot_grpo \
+    worker.actor.fsdp.torch_dtype=bf16 \
+    worker.actor.optim.strategy=adamw_bf16 \
     trainer.save_checkpoint_path=./saves/3b_grpo_cot \
-    trainer.n_gpus_per_node=8 \
-    trainer.val_before_train=true \
+    trainer.n_gpus_per_node=4 \
+    worker.actor.micro_batch_size_per_device_for_update=1 \
+    worker.actor.micro_batch_size_per_device_for_experience=1 \
+    worker.actor.global_batch_size=2 \
+    trainer.val_before_train=false \
     trainer.val_only=false

@@ -57,6 +57,14 @@ from torch.nn.utils.rnn import pad_sequence
 import re
 from typing import Dict, List, Optional
 
+
+from .core_algos import (
+    compute_grpo_outcome_advantage,
+    compute_gae_advantage_return,
+)
+
+
+
 def _ensure_numpy_arrays(d):
     for k, v in list(d.items()):
         if not isinstance(v, np.ndarray):
@@ -195,6 +203,40 @@ def compute_advantage(data: DataProto, adv_estimator: AdvantageEstimator, gamma:
     return data
 
 
+def compute_multi_advantage(
+    data: DataProto,
+    estimator: AdvantageEstimator,
+    gamma: float = 1.0,
+    lam:   float = 1.0,
+    weights: Optional[List[float]] = None,
+):
+    """Turn (B,T,K) reward tensor into (B,T,K) advantages."""
+    R = data.batch["token_level_scores"]          # (B,T,K)
+    K = R.size(-1)
+    w = torch.tensor(weights or [1.0]*K, device=R.device)
+
+    mask = data.batch["response_mask"]
+    uid  = data.non_tensor_batch["uid"]
+
+    advs, rets = [], []
+    for k in range(K):
+        r_k = R[..., k]
+
+        if estimator == AdvantageEstimator.GRPO:
+            adv_k, ret_k = compute_grpo_outcome_advantage(r_k, mask, uid)
+        elif estimator == AdvantageEstimator.GAE:
+            v_k = data.batch["values"][..., k]     # critic K-head if GAE
+            adv_k, ret_k = compute_gae_advantage_return(r_k, v_k, mask, gamma, lam)
+        else:
+            raise NotImplementedError
+
+        advs.append(adv_k * w[k])                 # λ-weight here
+        rets.append(ret_k)
+
+    data.batch["advantages"] = torch.stack(advs, dim=-1)   # (B,T,K)
+    data.batch["returns"]    = torch.stack(rets, dim=-1)
+    return data
+
 
 # When validating, save the output responses to an output file
 def save_responses_for_validation(batch, tokenizer, output_path):
@@ -327,6 +369,7 @@ class RayPPOTrainer:
 
         config.worker.actor.optim.training_steps = self.training_steps
         config.worker.critic.optim.training_steps = self.training_steps
+        self.policy_loss = config.worker.actor.optim.policy_loss  # 'single_reward' or 'multi_reward'
         print(f"Total training steps: {self.training_steps}")
 
     def _maybe_log_val_generations(
@@ -850,12 +893,25 @@ class RayPPOTrainer:
                             batch.batch["token_level_rewards"] = batch.batch["token_level_scores"]
 
                         # compute advantages, executed on the driver process
-                        batch = compute_advantage(
-                            batch,
-                            adv_estimator=self.config.algorithm.adv_estimator,
-                            gamma=self.config.algorithm.gamma,
-                            lam=self.config.algorithm.lam,
-                        )
+
+                        
+                        if self.policy_loss == 'single_reward':
+                            print('Computing Advantage for Single Reward')
+                            batch = compute_advantage(
+                                batch,
+                                adv_estimator=self.config.algorithm.adv_estimator,
+                                gamma=self.config.algorithm.gamma,
+                                lam=self.config.algorithm.lam,
+                            )
+                        elif self.policy_loss == 'multi_reward':
+                            print('Computing Advantage for Multi Reward')
+                            batch = compute_multi_advantage(
+                                batch,
+                                estimator=self.config.algorithm.adv_estimator,
+                                gamma=self.config.algorithm.gamma,
+                                lam=self.config.algorithm.lam,
+                                weights=[1.0, 1.0]     # or your preferred λ₁, λ₂
+                            )
 
                     # update critic
                     if self.use_critic:

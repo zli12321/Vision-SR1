@@ -51,7 +51,7 @@ class OptimConfig:
     warmup_style: str = "constant"
     """auto keys"""
     training_steps: int = field(default=-1, init=False)
-
+    policy_loss: str = 'single_reward'
 
 @dataclass
 class FSDPConfig:

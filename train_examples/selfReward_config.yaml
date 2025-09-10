@@ -42,6 +42,7 @@ worker:
       weight_decay: 1.0e-2
       strategy: adamw  # {adamw, adamw_bf16}
       lr_warmup_ratio: 0.0
+      policy_loss: multi_reward # {single_reward, multi_reward}
     fsdp:
       enable_full_shard: true
       enable_cpu_offload: false
