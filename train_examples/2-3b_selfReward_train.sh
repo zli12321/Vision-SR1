@@ -4,8 +4,9 @@ set -x
 
 export PYTHONUNBUFFERED=1
 
-MODEL_PATH=Qwen/Qwen2.5-VL-3B-Instruct
+# MODEL_PATH=Qwen/Qwen2.5-VL-3B-Instruct
 # MODEL_PATH=LMMs-Lab-Turtle/Qwen-2.5VL-3B-Cold-Start
+MODEL_PATH=../Models/Qwen2.5-VL-3B-Instruct
 
 
 python3 -m verl.trainer.main \
