@@ -863,10 +863,18 @@ class RayPPOTrainer:
                     # recompute old_log_probs
                     with timer("old", timing_raw):
                         old_log_probs = self.actor_rollout_wg.compute_log_probs(batch)
-                        if "old_log_probs" in batch.batch.keys():
-                            batch.batch = batch.batch.del_("old_log_probs")
 
-                        batch = batch.union(old_log_probs)
+                        td = batch.batch                       # shorthand
+
+                        if td.is_locked:
+                            td.unlock_()                       # unlock once
+
+                        # create / overwrite the key safely
+                        td.set_("old_log_probs",
+                                old_log_probs.batch["old_log_probs"],
+                                inplace=True)
+
+                        td.lock_()  
 
                     # compute ref_log_probs
                     if self.use_reference_policy:
