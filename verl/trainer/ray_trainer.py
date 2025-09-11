@@ -865,15 +865,17 @@ class RayPPOTrainer:
                         old_log_probs = self.actor_rollout_wg.compute_log_probs(batch)
 
                         td = batch.batch
-
                         if td.is_locked:
-                            td.unlock_()                      # unlock once
+                            td.unlock_()                              # unlock once
 
-                        # overwrite or insert the key
-                        td.set_("old_log_probs",
-                                old_log_probs.batch["old_log_probs"])   # ≤— no inplace kwarg
+                        # ---------- create OR replace the key ----------
+                        td.update({                                  # update() inserts if missing,
+                            "old_log_probs":                         # or overwrites if present
+                            old_log_probs.batch["old_log_probs"]
+                        })
+                        # ----------------------------------------------
 
-                        td.lock_() 
+                        td.lock_()
 
                     # compute ref_log_probs
                     if self.use_reference_policy:
