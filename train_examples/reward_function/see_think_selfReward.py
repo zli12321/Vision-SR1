@@ -129,10 +129,10 @@ def compute_score(predicts: List[str], ground_truths: List[str], questions: List
     print('-'*10)
     print("Regular generated answers: ", predicts[0])
     print('*'*10)
-    print('Description generated answers example: ', description_answers[0])
+    print('Visual Perception generated answers example: ', description_answers[0])
     print('Ground Truth answer: ', ground_truths[0])
-    print('Description Reward: ', scores[0]["description_accuracy"])
-    print('Regular answer reward: ', scores[0]["accuracy"])
+    print('Visual Perception Reward: ', scores[0]["description_accuracy"])
+    print('Answer Accuracy reward: ', scores[0]["accuracy"])
     print('-'*10)
 
     return scores
