@@ -24,7 +24,7 @@ python3 -m verl.trainer.main \
     trainer.save_checkpoint_path=./saves/3b_grpo_selfReward \
     worker.actor.fsdp.torch_dtype=bf16 \
     worker.actor.optim.strategy=adamw_bf16 \
-    trainer.n_gpus_per_node=4 \
+    trainer.n_gpus_per_node=2 \
     worker.actor.micro_batch_size_per_device_for_update=2 \
     worker.actor.micro_batch_size_per_device_for_experience=2 \
     worker.actor.global_batch_size=4 \
