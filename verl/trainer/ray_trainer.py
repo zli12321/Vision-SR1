@@ -860,22 +860,46 @@ class RayPPOTrainer:
                     with timer("reward", timing_raw):
                         reward_ref = self.reward_fn.compute_reward.remote(batch)
 
+                    # # recompute old_log_probs
+                    # with timer("old", timing_raw):
+                    #     old_log_probs = self.actor_rollout_wg.compute_log_probs(batch)
+
+                    #     td = batch.batch
+                    #     if td.is_locked:
+                    #         td.unlock_()                              # unlock once
+
+                    #     # ---------- create OR replace the key ----------
+                    #     td.update({                                  # update() inserts if missing,
+                    #         "old_log_probs":                         # or overwrites if present
+                    #         old_log_probs.batch["old_log_probs"]
+                    #     })
+                    #     # ----------------------------------------------
+
+                    #     td.lock_()
+
+                    # # compute ref_log_probs
+                    # if self.use_reference_policy:
+                    #     with timer("ref", timing_raw):
+                    #         ref_log_probs = self.ref_policy_wg.compute_ref_log_probs(batch)
+                    #         batch = batch.union(ref_log_probs)
+
+                    # # compute values
+                    # if self.use_critic:
+                    #     with timer("values", timing_raw):
+                    #         values = self.critic_wg.compute_values(batch)
+                    #         batch = batch.union(values)
+
                     # recompute old_log_probs
                     with timer("old", timing_raw):
                         old_log_probs = self.actor_rollout_wg.compute_log_probs(batch)
-
-                        td = batch.batch
-                        if td.is_locked:
-                            td.unlock_()                              # unlock once
-
-                        # ---------- create OR replace the key ----------
-                        td.update({                                  # update() inserts if missing,
-                            "old_log_probs":                         # or overwrites if present
-                            old_log_probs.batch["old_log_probs"]
+                        
+                        # Unlock for all modifications
+                        if batch.batch.is_locked:
+                            batch.batch.unlock_()
+                        
+                        batch.batch.update({
+                            "old_log_probs": old_log_probs.batch["old_log_probs"]
                         })
-                        # ----------------------------------------------
-
-                        td.lock_()
 
                     # compute ref_log_probs
                     if self.use_reference_policy:
@@ -888,6 +912,9 @@ class RayPPOTrainer:
                         with timer("values", timing_raw):
                             values = self.critic_wg.compute_values(batch)
                             batch = batch.union(values)
+
+                    # Lock at the end after all modifications are done
+                    batch.batch.lock_()
 
                     with timer("adv", timing_raw):
                         # get token level scores
