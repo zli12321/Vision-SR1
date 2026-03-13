@@ -102,7 +102,7 @@ python3 scripts/model_merger.py --local_dir CHECKPOINT_SAVE_DIR/global_step_*/ac
 
 | Method                   | Bits |    3B   |   7B   |  
 | ------------------------ | ---- |  ------ | ------ | 
-| GRPO Full Fine-Tuning    |  AMP |  2/4/8 or 8x80GB | 2/4/8 or 8x80GB | 
+| GRPO Full Fine-Tuning    |  AMP |  4/8 or 8x80GB | 4/8 or 8x80GB | 
 | GRPO LoRA Fine-Tuning    |  AMP |  2/4/8 or 8x32GB | 2/4/8 or 8x40GB | 
 
 > [!NOTE]
