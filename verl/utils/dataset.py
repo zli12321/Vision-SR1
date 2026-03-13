@@ -162,6 +162,8 @@ class RLHFDataset(Dataset):
 
         if self.image_key in example:
             # https://huggingface.co/docs/transformers/en/tasks/image_text_to_text
+            if "<image>" not in prompt_str:
+                prompt_str = prompt_str + "<image>"
             content_list = []
             for i, content in enumerate(prompt_str.split("<image>")):
                 if i != 0:
@@ -189,6 +191,8 @@ class RLHFDataset(Dataset):
         if self.image_key in example:
             prompt = self.processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
             images = example[self.image_key]
+            if not isinstance(images, (list, tuple)):
+                images = [images]
             if self.image_dir is not None and len(images) != 0 and isinstance(images[0], str):  # image paths
                 images = [os.path.join(self.image_dir, image) for image in images]
 
@@ -227,6 +231,8 @@ class RLHFDataset(Dataset):
         if self.image_key in example:
             prompt = self.processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
             images = example.pop(self.image_key)
+            if not isinstance(images, (list, tuple)):
+                images = [images]
             if self.image_dir is not None and len(images) != 0 and isinstance(images[0], str):  # image paths
                 images = [os.path.join(self.image_dir, image) for image in images]
 

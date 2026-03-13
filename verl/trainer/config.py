@@ -136,6 +136,8 @@ class TrainerConfig:
     """file to save ray timeline"""
     find_last_checkpoint: bool = True
     """automatically find the last checkpoint in the save checkpoint path to resume training"""
+    response_path: Optional[str] = None
+    """path to save all validation responses as JSONL (e.g. ./evaluation/responses/model_name/dataset.jsonl)"""
 
     def post_init(self):
         if self.save_checkpoint_path is None:

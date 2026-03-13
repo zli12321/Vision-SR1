@@ -232,6 +232,7 @@ class RayPPOTrainer:
         if (
             config.algorithm.adv_estimator in (AdvantageEstimator.GRPO, AdvantageEstimator.RLOO)
             and config.worker.rollout.n == 1
+            and not config.trainer.val_only
         ):
             raise ValueError("GRPO and RLOO algorithm need `config.worker.rollout.n > 1`.")
 
@@ -389,6 +390,29 @@ class RayPPOTrainer:
         samples = samples[: self.config.trainer.val_generations_to_log]
         self.logger.log_generation(samples, self.global_step)
 
+    def _maybe_save_responses(
+        self, inputs: list[str], outputs: list[str], labels: list[str], scores: list[float]
+    ) -> None:
+        """Save all validation responses to a JSONL file if response_path is set."""
+        response_path = self.config.trainer.response_path
+        if not response_path:
+            return
+
+        os.makedirs(os.path.dirname(response_path), exist_ok=True)
+
+        with open(response_path, "w", encoding="utf-8") as f:
+            for inp, out, lab, score in zip(inputs, outputs, labels, scores):
+                record = {
+                    "prompt": inp,
+                    "response": out,
+                    "ground_truth": lab,
+                    "score": score,
+                    "step": self.global_step,
+                }
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+        print(f"Saved {len(inputs)} validation responses to {response_path}")
+
     def _validate(self) -> dict[str, Any]:
         reward_tensor_lst = []
         # Lists to collect samples for the table
@@ -440,6 +464,7 @@ class RayPPOTrainer:
 
         self.actor_rollout_ref_wg.release_rollout_engine()
         self._maybe_log_val_generations(sample_inputs, sample_outputs, sample_labels, sample_scores)
+        self._maybe_save_responses(sample_inputs, sample_outputs, sample_labels, sample_scores)
         self.val_reward_score = torch.cat(reward_tensor_lst, dim=0).sum(-1).mean().item()
         val_reward_metrics = {f"val/{key}_reward": value for key, value in reduce_metrics(reward_metrics_lst).items()}
         val_length_metrics = {f"val_{key}": value for key, value in reduce_metrics(length_metrics_lst).items()}

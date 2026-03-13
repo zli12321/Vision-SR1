@@ -176,6 +176,9 @@ cython_debug/
 # outputs
 outputs/
 checkpoints/
+saves/
+evaluation/responses/
+evaluation/judgments/
 wandb/
 tensorboard_log/
 
