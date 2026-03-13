@@ -20,6 +20,6 @@ python3 -m vision_r1.main \
     trainer.total_epochs=1 \
     trainer.experiment_name=qwen2_5_vl_7b_visionR1_grpo \
     trainer.save_checkpoint_path=./saves/7b_grpo_accuracy \
-    trainer.n_gpus_per_node=2 \
+    trainer.n_gpus_per_node=4 \
     trainer.val_before_train=true \
     trainer.val_only=false
