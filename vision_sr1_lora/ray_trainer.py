@@ -236,6 +236,8 @@ class SelfRewardTrainer(RayPPOTrainer):
 
             meta_info = {
                 "n": 1,
+                "temperature": 0.0,
+                "top_p": 1.0,
                 "min_pixels": self.config.data.min_pixels,
                 "max_pixels": self.config.data.max_pixels,
                 "video_fps": self.config.data.video_fps,
